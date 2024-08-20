@@ -1,0 +1,43 @@
+/* Define CSS variables for both light and dark themes */
+:root {
+  --bg-light: #ffffff;
+  --bgSoft-light: #f0f0f0;
+  --text-light: #000000;
+  --textSoft-light: #333333;
+
+  --bg-dark: #151c2c;
+  --bgSoft-dark: #182237;
+  --text-dark: white;
+  --textSoft-dark: #b7bac1;
+
+  /* Default to light theme */
+  --bg: var(--bg-light);
+  --bgSoft: var(--bgSoft-light);
+  --text: var(--text-light);
+  --textSoft: var(--textSoft-light);
+}
+
+/* Apply dark mode variables when data-theme is set to 'dark' */
+[data-theme='dark'] {
+  --bg: var(--bg-dark);
+  --bgSoft: var(--bgSoft-dark);
+  --text: var(--text-dark);
+  --textSoft: var(--textSoft-dark);
+}
+
+/* Global styles */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  background-color: var(--bg);
+  color: var(--text);
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
