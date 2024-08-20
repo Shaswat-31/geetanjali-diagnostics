@@ -15,9 +15,6 @@ export const metadata = {
 export default function RootLayout({ children, session }) {
   return (
     <html lang="en">
-      <head>
-            <img src="/astronaut.png" alt="Geetanjali Diagnostics Logo" className="logo-class" />
-          </head>
       <body className={inter.className}>
         <SessionProvider session={session}> {children}</SessionProvider>
         </body>
