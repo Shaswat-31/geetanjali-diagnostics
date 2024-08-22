@@ -4,6 +4,7 @@
     "next/core-web-vitals"
   ],
   "rules": {
+    "react/no-unescaped-entities": "off",
     "react/prop-types": "off",
     "no-unused-vars": "warn"
   }
