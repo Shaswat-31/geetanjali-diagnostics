@@ -72,7 +72,7 @@ const UsersPage = async ({ searchParams }) => {
               <td>
               {user.isAdmin && (
                 <div className={styles.buttons}>
-                  <Link href={`/dashboard/users/${emp.id}`}>
+                  <Link href={`/dashboard/employees/${emp.id}`}>
                     <button className={`${styles.button} ${styles.view}`}>
                       View
                     </button>
