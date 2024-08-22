@@ -1,34 +1,64 @@
 // patients/page.jsx
-
 import { deletePatient } from "@/app/lib/actions";
-import { fetchPatients } from "@/app/lib/data";
+import { fetchPatients, getPatientsByDate } from "@/app/lib/data";
 import Pagination from "@/app/ui/dashboard/pagination/pagination";
 import Search from "@/app/ui/dashboard/search/search";
 import styles from "@/app/ui/dashboard/patients/patients.module.css";
 import Link from "next/link";
 import { auth } from "@/app/auth";
-
+import DateRangeForm from "@/app/_components/datePicker";
+import { getEndOfMonth, getStartOfMonth } from "@/app/lib/dateUtils";
 const PatientsPage = async ({ searchParams }) => {
   const { user } = await auth();
   const q = searchParams?.q || "";
   const page = searchParams?.page || 1;
   const { count, patients } = await fetchPatients(q, page);
+  const monthStart=getStartOfMonth();
+  const monthEnd=getEndOfMonth();
+  const startDateParam = searchParams?.startDate || monthStart;
+  const endDateParam = searchParams?.endDate || monthEnd;
+  
+  // Ensure startDate starts at the beginning of the day
+  const startDate = new Date(startDateParam);
+  startDate.setHours(0, 0, 0, 0);
 
+  // Ensure endDate ends at the end of the day
+  const endDate = new Date(endDateParam);
+  endDate.setHours(23, 59, 59, 999);
+  const filteredPatients = patients.filter(patient => {
+    const patientDate = new Date(patient.createdAt);
+    return patientDate >= new Date(startDate) && patientDate <= new Date(endDate);
+  });
+
+  // Sort patients by date (optional)
+  filteredPatients.sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt));
+
+  const patients1=await getPatientsByDate(q,startDate,endDate);
   return (
     <div className={styles.container}>
-      <div className={styles.top}>
+      <div className="flex flex-col gap-4 mb-4">
+        <DateRangeForm/>
+        <div className="flex flex-rows justify-between">
         <Search placeholder="Search for a patient..." />
-          <Link href="/dashboard/patients/add">
+        <div className="flex gap-2">
+        <Link href="/dashboard/patients/add">
             <button className={styles.addButton}>Add New</button>
           </Link>
+          <a href={`/api/downloadPatients?startDate=${startDateParam}&endDate=${endDateParam}&q=${q}`} download>
+          <button className={styles.addButton}>Download Data</button>
+        </a>
+        </div>
+        </div>
+       
+         
       </div>
       <table className={styles.table}>
         <thead>
           <tr>
+            <td>Serial</td>
             <td>Name</td>
             <td>Age/Sex</td>
             <td>Date</td>
-            <td>Tests</td>
             <td>Cost Total</td>
             <td>Transaction Mode</td>
             <td>Doctor Referred</td>
@@ -42,12 +72,12 @@ const PatientsPage = async ({ searchParams }) => {
           </tr>
         </thead>
         <tbody>
-          {patients.map((patient) => (
+          {patients1.map((patient,index) => (
             <tr key={patient.id}>
+              <td>{index+1}.</td>
               <td>{patient.name}</td>
               <td>{patient.ageSex}</td>
               <td>{new Date(patient.date).toDateString()}</td>
-              <td>{patient.tests}</td>
               <td>{patient.costTotal}</td>
               <td>{patient.transactionMode}</td>
               <td>{patient.doctorReferred}</td>
@@ -76,7 +106,6 @@ const PatientsPage = async ({ searchParams }) => {
           ))}
         </tbody>
       </table>
-      <Pagination count={count} />
     </div>
   );
 };

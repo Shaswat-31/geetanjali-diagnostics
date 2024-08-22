@@ -1,4 +1,7 @@
 /* Define CSS variables for both light and dark themes */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 :root {
   --bg-light: #ffffff;
   --bgSoft-light: #f0f0f0;

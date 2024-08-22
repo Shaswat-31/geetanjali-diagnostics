@@ -1,9 +1,11 @@
 import { Patient, User, Test } from "./models";
 import { connectToDB } from "./utils";
+import { getStartOfWeek, getEndOfWeek, getStartOfDay, getEndOfDay, getStartOfMonth, getEndOfMonth } from './dateUtils'; 
+import { auth } from "../auth";
 export const fetchUsers = async (q, page) => {
   const regex = new RegExp(q, "i");
 
-  const ITEM_PER_PAGE = 2;
+  const ITEM_PER_PAGE = 5;
 
   try {
     connectToDB();
@@ -33,7 +35,7 @@ export const fetchUser = async (id) => {
 export const fetchPatients = async (q, page) => {
   const regex = new RegExp(q, "i");
 
-  const ITEM_PER_PAGE = 2;
+  const ITEM_PER_PAGE = 10;
 
   try {
     connectToDB();
@@ -60,9 +62,26 @@ export const fetchPatients = async (q, page) => {
     }
   };
   
+  export const getPatientsByDate = async (q,startDate, endDate) => {
+    const regex = new RegExp(q, "i");
+    try {
+      connectToDB();
+      const start = new Date(startDate);
+      const end = new Date(endDate);
+      const patients = await Patient.find({
+        name: { $regex: regex },
+        createdAt: { $gte: start, $lte: end }
+      });
+  
+      return patients;
+    } catch (err) {
+      console.log(err);
+      throw new Error("Failed to fetch patients by date!");
+    }
+  };
   export const fetchTests = async (q, page) => {
     const regex = new RegExp(q, "i");
-    const ITEM_PER_PAGE = 2;
+    const ITEM_PER_PAGE = 10;
   
     try {
       connectToDB();
@@ -145,56 +164,180 @@ export const fetchPatients = async (q, page) => {
 //     throw new Error("Failed to fetch card data.");
 //   }
 // };
-const getStartOfWeek = () => {
-  const now = new Date();
-  const firstDayOfWeek = now.getDate() - now.getDay(); // Sunday as the first day of the week
-  return new Date(now.setDate(firstDayOfWeek));
-};
+// const getStartOfWeek = () => {
+//   const now = new Date();
+//   const firstDayOfWeek = now.getDate() - now.getDay(); // Sunday as the first day of the week
+//   return new Date(now.setDate(firstDayOfWeek));
+// };
 
-const getEndOfWeek = () => {
-  const now = new Date();
-  const lastDayOfWeek = now.getDate() - now.getDay() + 6; // Saturday as the last day of the week
-  return new Date(now.setDate(lastDayOfWeek));
-};
+// const getEndOfWeek = () => {
+//   const now = new Date();
+//   const lastDayOfWeek = now.getDate() - now.getDay() + 6; // Saturday as the last day of the week
+//   return new Date(now.setDate(lastDayOfWeek));
+// };
 
+// export const fetchCardsData = async () => {
+//   connectToDB();
+  
+//   try {
+//     const userCount = await User.countDocuments();
+    
+//     const startOfDay = getStartOfDay();
+//     const endOfDay = getEndOfDay();
+//     // Get start and end of the current week
+//     const startOfWeek = getStartOfWeek();
+//     const endOfWeek = getEndOfWeek();
+
+//     // Count patients added or updated this week
+//     const patientCount = await Patient.countDocuments({
+//       createdAt: { $gte: startOfWeek, $lte: endOfWeek }
+//     });
+    
+//     const patientCountToday = await Patient.countDocuments({
+//       createdAt: { $gte: startOfDay, $lte: endOfDay }
+//     });
+//     const testCount = await Test.countDocuments();
+//     const testCountToday=await Test.countDocuments({
+//       createdAt: { $gte: startOfDay, $lte: endOfDay }
+//     });
+//     const userCountToday=await User.countDocuments({
+//       createdAt: { $gte: startOfDay, $lte: endOfDay }
+//     })
+//     const cards = [
+//       {
+//         id: 1,
+//         title: "Employees",
+//         number: userCount,
+//         numberToday:userCountToday,
+//       },
+//       {
+//         id: 2,
+//         title: "Patients",
+//         number: patientCount,
+//         numberToday:patientCountToday,
+//       },
+//       {
+//         id: 3,
+//         title: "Tests",
+//         number: testCount,
+//         numberToday:testCountToday,
+//       },
+//     ];
+
+//     return cards;
+//   } catch (err) {
+//     console.error(err);
+//     throw new Error("Failed to fetch card data.");
+//   }
+// };
 export const fetchCardsData = async () => {
   connectToDB();
-  
+  const { user } = await auth();
   try {
-    const userCount = await User.countDocuments();
+    // const userCount = await User.countDocuments();
     
-    // Get start and end of the current week
+    const startOfDay = getStartOfDay();
+    const endOfDay = getEndOfDay();
+    const startOfMonth = getStartOfMonth();  // Function to get start of the current month
+    const endOfMonth = getEndOfMonth();      // Function to get end of the current month
+    
     const startOfWeek = getStartOfWeek();
     const endOfWeek = getEndOfWeek();
 
-    // Count patients added or updated this week
     const patientCount = await Patient.countDocuments({
-      createdAt: { $gte: startOfWeek, $lte: endOfWeek }
+      createdAt: { $gte: startOfMonth, $lte: endOfMonth }
+    });
+    
+    const patientCountToday = await Patient.countDocuments({
+      createdAt: { $gte: startOfDay, $lte: endOfDay }
     });
     
     const testCount = await Test.countDocuments();
+    const testCountToday = await Test.countDocuments({
+      createdAt: { $gte: startOfDay, $lte: endOfDay }
+    });
     
+    // const userCountToday = await User.countDocuments({
+    //   createdAt: { $gte: startOfDay, $lte: endOfDay }
+    // });
+
+    // Calculate total cost for today
+    const totalCostToday = await Patient.aggregate([
+      {
+        $match: {
+          createdAt: { $gte: startOfDay, $lte: endOfDay }
+        }
+      },
+      {
+        $group: {
+          _id: null,
+          totalCost: { $sum: "$costTotal" }
+        }
+      }
+    ]);
+
+    // Calculate total cost for this month
+    const totalCostThisMonth = await Patient.aggregate([
+      {
+        $match: {
+          createdAt: { $gte: startOfMonth, $lte: endOfMonth }
+        }
+      },
+      {
+        $group: {
+          _id: null,
+          totalCost: { $sum: "$costTotal" }
+        }
+      }
+    ]);
+
     const cards = [
       {
         id: 1,
-        title: "Employees",
-        number: userCount,
+        title: "Patients this month",
+        number: patientCount,
+        numberToday: patientCountToday,
       },
       {
         id: 2,
-        title: "Patients",
-        number: patientCount,
-      },
-      {
-        id: 3,
         title: "Tests",
         number: testCount,
+        numberToday: testCountToday,
       },
     ];
+    if (user?.isAdmin) {
+      cards.push({
+        id: 3,
+        title: "Cost Total This Month",
+        number: totalCostThisMonth.length > 0 ? totalCostThisMonth[0].totalCost : 0,
+        numberToday: totalCostToday.length > 0 ? totalCostToday[0].totalCost : 0,
+      });
+    }
 
     return cards;
   } catch (err) {
     console.error(err);
     throw new Error("Failed to fetch card data.");
+  }
+};
+export const fetchPatientsToday = async () => {
+  try {
+    connectToDB();
+
+    const startOfDay = getStartOfDay();
+    const endOfDay = getEndOfDay();
+
+    // Fetch patients created today
+    const patientsToday = await Patient.find({
+      createdAt: {
+        $gte: startOfDay,
+        $lte: endOfDay,
+      },
+    });
+
+    return patientsToday;
+  } catch (err) {
+    console.log(err);
+    throw new Error("Failed to fetch patients created today!");
   }
 };

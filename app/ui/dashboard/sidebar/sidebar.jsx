@@ -11,7 +11,9 @@ import {
   MdLogout,
 } from "react-icons/md";
 import { auth, signOut } from "@/app/auth";
-
+import { Avatar } from "@chakra-ui/react";
+import { FaHospitalUser } from "react-icons/fa6";
+import { LiaHospitalAltSolid } from "react-icons/lia";
 const menuItems = [
   {
     title: "Pages",
@@ -22,19 +24,19 @@ const menuItems = [
         icon: <MdDashboard />,
       },
       {
-        title: "Users",
-        path: "/dashboard/users",
+        title: "Employees",
+        path: "/dashboard/employees",
         icon: <MdSupervisedUserCircle />,
       },
       {
         title: "Patients",
         path: "/dashboard/patients",
-        icon: <MdShoppingBag />,
+        icon: <LiaHospitalAltSolid />,
       },
       {
         title: "Tests",
         path: "/dashboard/tests",
-        icon: <MdAttachMoney />,
+        icon: <FaHospitalUser />,
       },
     ],
   },
@@ -51,13 +53,7 @@ const Sidebar = async () => {
   return (
     <div className={styles.container}>
       <div className={styles.user}>
-        <Image
-          className={styles.userImage}
-          src={user.img || "/noavatar.png"}
-          alt=""
-          width="50"
-          height="50"
-        />
+      <Avatar name={user.username} src='https://bit.ly/broken-link' />
         <div className={styles.userDetail}>
           <span className={styles.username}>{user.username}</span>
           <span className={styles.userTitle}>
@@ -87,7 +83,7 @@ const Sidebar = async () => {
       >
         <button className={styles.logout}>
           <MdLogout />
-          Logout
+          <h1>Logout</h1>
         </button>
       </form>
     </div>

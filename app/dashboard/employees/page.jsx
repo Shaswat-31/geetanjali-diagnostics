@@ -6,6 +6,8 @@ import styles from "@/app/ui/dashboard/users/users.module.css";
 import Image from "next/image";
 import Link from "next/link";
 import { auth } from "@/app/auth";
+import {Unauthorized} from "@/app/_components/unauthorized"
+
 const UsersPage = async ({ searchParams }) => {
   const { user } = await auth();
   console.log(user.isAdmin);
@@ -13,12 +15,24 @@ const UsersPage = async ({ searchParams }) => {
   const q = searchParams?.q || "";
   const page = searchParams?.page || 1;
   const { count, users } = await fetchUsers(q, page);
+ 
+  if (!user.isAdmin) {
+    return (
+      // <Unauthorized/>
+      <div className="flex flex-col items-center justify-center min-h-screen">
+  <img src="/notAuth.png" alt="Not Authorized" className="w-64 h-64 mb-8" />
+  <h1 className="text-3xl font-bold text-red-600">Sorry, you are not authorized.</h1>
+  <p className="mt-4 text-gray-600">Please contact the administrator if you believe this is a mistake.</p>
+</div>
+
+    );
+  }
   return (
     <div className={styles.container}>
       <div className={styles.top}>
         <Search placeholder="Search for a user..." />
         {user.isAdmin && 
-           <Link href="/dashboard/users/add">
+           <Link href="/dashboard/employees/add">
           <button className={styles.addButton}>Add New</button>
         </Link>
         }
@@ -31,7 +45,6 @@ const UsersPage = async ({ searchParams }) => {
             <td>Email</td>
             <td>Created At</td>
             <td>Role</td>
-            <td>Status</td>
             {
               user.isAdmin && 
               <td>Action</td>
@@ -55,8 +68,7 @@ const UsersPage = async ({ searchParams }) => {
               </td>
               <td>{emp.email}</td>
               <td>{emp.createdAt?.toString().slice(4, 16)}</td>
-              <td>{emp.isAdmin ? "Admin" : "Client"}</td>
-              <td>{emp.isActive ? "active" : "passive"}</td>
+              <td>{emp.isAdmin ? "Admin" : "Employee"}</td>
               <td>
               {user.isAdmin && (
                 <div className={styles.buttons}>

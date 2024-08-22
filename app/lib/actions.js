@@ -8,7 +8,7 @@ import bcrypt from "bcrypt";
 import { signIn } from "../auth";
 import { auth } from "@/app/auth";
 export const addUser = async (formData) => {
-  const { username, email, password, phone, address, isAdmin, isActive } =
+  const { username, email, password, phone, address, isAdmin } =
     Object.fromEntries(formData);
 
   try {
@@ -24,7 +24,6 @@ export const addUser = async (formData) => {
       phone,
       address,
       isAdmin,
-      isActive,
     });
 
     await newUser.save();
@@ -33,12 +32,12 @@ export const addUser = async (formData) => {
     throw new Error("Failed to create user!");
   }
 
-  revalidatePath("/dashboard/users");
-  redirect("/dashboard/users");
+  revalidatePath("/dashboard/employees");
+  redirect("/dashboard/employees");
 };
 
 export const updateUser = async (formData) => {
-  const { id, username, email, password, phone, address, isAdmin, isActive } =
+  const { id, username, email, password, phone, address, isAdmin } =
     Object.fromEntries(formData);
 
   try {
@@ -51,7 +50,6 @@ export const updateUser = async (formData) => {
       phone,
       address,
       isAdmin,
-      isActive,
     };
 
     Object.keys(updateFields).forEach(
@@ -65,8 +63,8 @@ export const updateUser = async (formData) => {
     throw new Error("Failed to update user!");
   }
 
-  revalidatePath("/dashboard/users");
-  redirect("/dashboard/users");
+  revalidatePath("/dashboard/employees");
+  redirect("/dashboard/employees");
 };
 
 export const deleteUser = async (formData) => {
@@ -80,28 +78,67 @@ export const deleteUser = async (formData) => {
     throw new Error("Failed to delete user!");
   }
 
-  revalidatePath("/dashboard/products");
+  revalidatePath("/dashboard/employees");
 };
 
 // Add a patient
+// export const addPatient = async (formData) => {
+//   const { user } = await auth();
+//   console.log(user.username);
+//   const { name, ageSex, tests, costTotal, transactionMode, doctorReferred, place } =
+//     Object.fromEntries(formData);
+
+//   try {
+//     connectToDB();
+
+//     const newPatient = new Patient({
+//       name,
+//       ageSex,
+//       tests,
+//       costTotal,
+//       transactionMode,
+//       doctorReferred,
+//       place,
+//       addedBy:user.username,
+//     });
+
+//     await newPatient.save();
+//   } catch (err) {
+//     console.log(err);
+//     throw new Error("Failed to create patient!");
+//   }
+
+//   revalidatePath("/dashboard/patients");
+//   redirect("/dashboard/patients");
+// };
 export const addPatient = async (formData) => {
   const { user } = await auth();
   console.log(user.username);
-  const { name, ageSex, tests, costTotal, transactionMode, doctorReferred, place } =
-    Object.fromEntries(formData);
+  const {
+    name,
+    age,
+    sex,
+    tests,
+    test2,
+    testType,
+    costTotal,
+    transactionMode,
+    doctorReferred,
+    place,
+  } = Object.fromEntries(formData);
 
   try {
     connectToDB();
-
     const newPatient = new Patient({
       name,
-      ageSex,
-      tests,
+      ageSex: `${age}/${sex}`, // Combining age and sex into one field as per schema
+      tests: `${tests}, ${test2}`, // Combining the tests fields
+      testType,
       costTotal,
       transactionMode,
       doctorReferred,
       place,
-      addedBy:user.username,
+      addedBy: user.username,
     });
 
     await newPatient.save();
@@ -114,27 +151,38 @@ export const addPatient = async (formData) => {
   redirect("/dashboard/patients");
 };
 
-// Update a patient
 export const updatePatient = async (formData) => {
-  const { id, name, ageSex, tests, costTotal, transactionMode, doctorReferred, place } =
-    Object.fromEntries(formData);
+  const {
+    id,
+    name,
+    age,
+    sex,
+    tests,
+    test2,
+    testType,
+    costTotal,
+    transactionMode,
+    doctorReferred,
+    place,
+  } = Object.fromEntries(formData);
 
   try {
     connectToDB();
 
     const updateFields = {
       name,
-      ageSex,
-      tests,
+      ageSex: `${age}/${sex}`,
+      tests: `${tests}, ${test2}`,
+      testType,
       costTotal,
       transactionMode,
       doctorReferred,
       place,
     };
 
+    // Remove empty or undefined fields
     Object.keys(updateFields).forEach(
-      (key) =>
-        (updateFields[key] === "" || undefined) && delete updateFields[key]
+      (key) => (updateFields[key] === "" || updateFields[key] === undefined) && delete updateFields[key]
     );
 
     await Patient.findByIdAndUpdate(id, updateFields);
@@ -146,6 +194,62 @@ export const updatePatient = async (formData) => {
   revalidatePath("/dashboard/patients");
   redirect("/dashboard/patients");
 };
+
+// export const addPatient = async (formData) => {
+//   const { user } = await auth();
+//   const data = Object.fromEntries(formData.entries());
+
+//   try {
+//     await connectToDB();
+
+//     const newPatient = new Patient({
+//       ...data,
+//       addedBy: user.username,
+//     });
+
+//     await newPatient.save();
+//   } catch (err) {
+//     console.error(err);
+//     throw new Error("Failed to create patient!");
+//   }
+
+//   revalidatePath("/dashboard/patients");
+//   redirect("/dashboard/patients");
+// };
+
+
+// Update a patient
+// export const updatePatient = async (formData) => {
+//   const { id, name, ageSex, tests, costTotal, transactionMode, doctorReferred, place } =
+//     Object.fromEntries(formData);
+
+//   try {
+//     connectToDB();
+
+//     const updateFields = {
+//       name,
+//       ageSex,
+//       tests,
+//       costTotal,
+//       transactionMode,
+//       doctorReferred,
+//       place,
+//     };
+
+//     Object.keys(updateFields).forEach(
+//       (key) =>
+//         (updateFields[key] === "" || undefined) && delete updateFields[key]
+//     );
+
+//     await Patient.findByIdAndUpdate(id, updateFields);
+//   } catch (err) {
+//     console.log(err);
+//     throw new Error("Failed to update patient!");
+//   }
+
+//   revalidatePath("/dashboard/patients");
+//   redirect("/dashboard/patients");
+// };
 
 // Delete a patient
 export const deletePatient = async (formData) => {
@@ -177,7 +281,7 @@ export const authenticate = async (prevState, formData) => {
 // Add a test
 export const addTest = async (formData) => {
   const { user } = await auth(); // Get the current user for the addedBy field
-  const { testName, inventoryStatus, chemicalCost, areaRate, regularCost, profit, nightCost, wholesaleCost } =
+  const { testName, inventoryStatus, chemicalCost, areaRate, regularCost, profit, nightCost, nightProfit, wholesaleCost, wholesaleProfit } =
     Object.fromEntries(formData);
 
   try {
@@ -191,8 +295,10 @@ export const addTest = async (formData) => {
       regularCost,
       profit,
       nightCost,
+      nightProfit, // Include if required
       wholesaleCost,
-      testAddedBy: user.username, 
+      wholesaleProfit, // Include if required
+      testAddedBy: user.username,
     });
 
     await newTest.save();
@@ -204,10 +310,8 @@ export const addTest = async (formData) => {
   revalidatePath("/dashboard/tests");
   redirect("/dashboard/tests");
 };
-
-// Update a test
 export const updateTest = async (formData) => {
-  const { id, testName, inventoryStatus, chemicalCost, areaRate, regularCost, profit, nightCost, wholesaleCost } =
+  const { id, testName, inventoryStatus, chemicalCost, areaRate, regularCost, profit, nightCost, nightProfit, wholesaleCost, wholesaleProfit } =
     Object.fromEntries(formData);
 
   try {
@@ -221,12 +325,14 @@ export const updateTest = async (formData) => {
       regularCost,
       profit,
       nightCost,
+      nightProfit, // Include if required
       wholesaleCost,
+      wholesaleProfit, // Include if required
     };
 
+    // Remove empty or undefined fields
     Object.keys(updateFields).forEach(
-      (key) =>
-        (updateFields[key] === "" || undefined) && delete updateFields[key]
+      (key) => (updateFields[key] === "" || updateFields[key] === undefined) && delete updateFields[key]
     );
 
     await Test.findByIdAndUpdate(id, updateFields);
@@ -238,6 +344,7 @@ export const updateTest = async (formData) => {
   revalidatePath("/dashboard/tests");
   redirect("/dashboard/tests");
 };
+
 
 // Delete a test
 export const deleteTest = async (formData) => {

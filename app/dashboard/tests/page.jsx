@@ -17,34 +17,37 @@ const TestsPage = async ({ searchParams }) => {
       <div className={styles.container}>
         <div className={styles.top}>
           <Search placeholder="Search for a test..." />
-          <Link href="/dashboard/tests/add">
+          {
+            user.isAdmin &&
+            <Link href="/dashboard/tests/add">
             <button className={styles.addButton}>Add New</button>
           </Link>
+          }
         </div>
         <table className={styles.table}>
           <thead>
             <tr>
+              <td>Serial</td>
               <td>Test Name</td>
               <td>Inventory Status</td>
               <td>Chemical Cost</td>
               <td>Area Rate</td>
               <td>Regular Cost</td>
-              <td>Profit</td>
               <td>Night Cost</td>
-              <td>Wholesale Profit</td>
+              <td>Wholesale Cost</td>
               <td>Added By</td>
               {user.isAdmin && <td>Action</td>}
             </tr>
           </thead>
           <tbody>
-            {tests.map((test) => (
+            {tests.map((test,index) => (
               <tr key={test.id}>
+                <td>{index+1}</td>
                 <td>{test.testName}</td>
                 <td>{test.inventoryStatus}</td>
                 <td>{test.chemicalCost}</td>
                 <td>{test.areaRate}</td>
                 <td>{test.regularCost}</td>
-                <td>{test.profit}</td>
                 <td>{test.nightCost}</td>
                 <td>{test.wholesaleCost}</td>
                 <td>{test.testAddedBy}</td>

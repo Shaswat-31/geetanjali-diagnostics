@@ -14,8 +14,9 @@ const Dashboard = async() => {
             <Card item={item} key={item.id} />
           ))}
         </div>
-        {/* <Transactions /> */}
-        {/* <Chart /> */}
+          
+        <Transactions />
+        <Chart />
       </div>
     </div>
   );

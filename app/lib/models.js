@@ -25,10 +25,6 @@ const userSchema = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
-    isActive: {
-      type: Boolean,
-      default: true,
-    },
     phone: {
       type: String,
     },
@@ -40,6 +36,47 @@ const userSchema = new mongoose.Schema(
 );
 // models.js
 
+// const patientSchema = new mongoose.Schema(
+//   {
+//     name: {
+//       type: String,
+//       required: true,
+//     },
+//     ageSex: {
+//       type: String,
+//       required: true,
+//     },
+//     date: {
+//       type: Date,
+//       default: Date.now,
+//     },
+//     tests: {
+//       type: String,
+//       required: true,
+//     },
+//     costTotal: {
+//       type: Number,
+//       required: true,
+//     },
+//     transactionMode: {
+//       type: String,
+//       required: true,
+//     },
+//     doctorReferred: {
+//       type: String,
+//       required: true,
+//     },
+//     place: {
+//       type: String,
+//       required: true,
+//     },
+//     addedBy: {
+//       type: String,
+//       required: true,
+//     },
+//   },
+//   { timestamps: true }
+// );
 const patientSchema = new mongoose.Schema(
   {
     name: {
@@ -55,6 +92,10 @@ const patientSchema = new mongoose.Schema(
       default: Date.now,
     },
     tests: {
+      type: String,
+      required: true,
+    },
+    testType: {
       type: String,
       required: true,
     },
@@ -81,6 +122,7 @@ const patientSchema = new mongoose.Schema(
   },
   { timestamps: true }
 );
+
 const TestSchema = new mongoose.Schema({
   testName: { type: String, required: true },
   inventoryStatus: { type: String, required: true },
@@ -89,12 +131,12 @@ const TestSchema = new mongoose.Schema({
   regularCost: { type: Number, required: true },
   profit: { type: Number, required: true },
   nightCost: { type: Number, required: true },
+  nightProfit: { type: Number, required: true }, // Add if required
   wholesaleCost: { type: Number, required: true },
-  testAddedBy: {
-    type: String,
-    required: true,
-  },
+  wholesaleProfit: { type: Number, required: true }, // Add if required
+  testAddedBy: { type: String, required: true }, // Add this field
 }, { timestamps: true });
+
 
 export const Test = mongoose.models.Test || mongoose.model('Test', TestSchema);
 export const Patient = mongoose.models.Patient || mongoose.model("Patient", patientSchema);
