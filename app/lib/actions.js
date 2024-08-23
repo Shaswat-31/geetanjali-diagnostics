@@ -39,14 +39,15 @@ export const addUser = async (formData) => {
 export const updateUser = async (formData) => {
   const { id, username, email, password, phone, address, isAdmin } =
     Object.fromEntries(formData);
-
+    
   try {
     connectToDB();
-
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(password, salt);
     const updateFields = {
       username,
       email,
-      password,
+      password: hashedPassword,
       phone,
       address,
       isAdmin,
