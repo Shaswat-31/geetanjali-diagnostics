@@ -1,7 +1,7 @@
-/* Define CSS variables for both light and dark themes */
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
 :root {
   --bg-light: #ffffff;
   --bgSoft-light: #f0f0f0;
@@ -13,19 +13,19 @@
   --text-dark: white;
   --textSoft-dark: #b7bac1;
 
-  /* Default to light theme */
-  --bg: var(--bg-light);
-  --bgSoft: var(--bgSoft-light);
-  --text: var(--text-light);
-  --textSoft: var(--textSoft-light);
-}
-
-/* Apply dark mode variables when data-theme is set to 'dark' */
-[data-theme='dark'] {
+  /* Default to dark theme */
   --bg: var(--bg-dark);
   --bgSoft: var(--bgSoft-dark);
   --text: var(--text-dark);
   --textSoft: var(--textSoft-dark);
+}
+
+/* Apply light mode variables when data-theme is set to 'light' */
+[data-theme='light'] {
+  --bg: var(--bg-light);
+  --bgSoft: var(--bgSoft-light);
+  --text: var(--text-light);
+  --textSoft: var(--textSoft-light);
 }
 
 /* Global styles */
