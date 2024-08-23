@@ -30,7 +30,7 @@ const UsersPage = async ({ searchParams }) => {
   return (
     <div className={styles.container}>
       <div className={styles.top}>
-        <Search placeholder="Search for a user..." />
+        <Search placeholder="Search for an employee..." />
         {user.isAdmin && 
            <Link href="/dashboard/employees/add">
           <button className={styles.addButton}>Add New</button>
