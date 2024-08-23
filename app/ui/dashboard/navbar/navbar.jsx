@@ -12,7 +12,7 @@ const Navbar = () => {
   useEffect(() => {
     const savedTheme = localStorage.getItem('theme') || 'light';
     const darkMode = savedTheme === 'dark';
-    setDarkMode(darkMode);
+    setDarkMode(!darkMode);
     document.documentElement.setAttribute('data-theme', savedTheme);
   }, []);
 

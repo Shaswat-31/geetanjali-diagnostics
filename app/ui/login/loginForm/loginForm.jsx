@@ -13,7 +13,7 @@ const LoginForm = () => {
   };
 
   return (
-    <div className="flex items-center justify-center min-h-full bg-gray-100">
+    <div className="flex items-center justify-center min-h-full min-w-full bg-gray-100">
       <form action={formAction} className="w-full max-w-sm p-8 bg-white rounded-lg shadow-xl border border-gray-300">
         <h1 className="text-3xl font-semibold mb-8 text-center text-gray-800">Login</h1>
         
