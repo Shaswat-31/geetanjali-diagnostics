@@ -7,6 +7,7 @@ import Search from "@/app/ui/dashboard/search/search";
 import styles from "@/app/ui/dashboard/patients/patients.module.css";
 import Link from "next/link";
 import { auth } from "@/app/auth";
+import DeleteBtn from "@/app/_components/deleteBtn";
 const TestsPage = async ({ searchParams }) => {
     const { user } = await auth();
     const q = searchParams?.q || "";
@@ -35,7 +36,6 @@ const TestsPage = async ({ searchParams }) => {
               <td>Regular Cost</td>
               <td>Night Cost</td>
               <td>Wholesale Cost</td>
-              <td>Added By</td>
               {user.isAdmin && <td>Action</td>}
             </tr>
           </thead>
@@ -50,7 +50,6 @@ const TestsPage = async ({ searchParams }) => {
                 <td>{test.regularCost}</td>
                 <td>{test.nightCost}</td>
                 <td>{test.wholesaleCost}</td>
-                <td>{test.testAddedBy}</td>
                 {user.isAdmin && (
                   <td>
                     <div className={styles.buttons}>
@@ -59,12 +58,8 @@ const TestsPage = async ({ searchParams }) => {
                           View
                         </button>
                       </Link>
-                      <form action={deleteTest} method="POST">
-                        <input type="hidden" name="id" value={test.id} />
-                        <button className={`${styles.button} ${styles.delete}`}>
-                          Delete
-                        </button>
-                      </form>
+                       <DeleteBtn id={test.id} comp="Test"/>
+                      
                     </div>
                   </td>
                 )}

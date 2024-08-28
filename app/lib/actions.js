@@ -68,8 +68,7 @@ export const updateUser = async (formData) => {
   redirect("/dashboard/employees");
 };
 
-export const deleteUser = async (formData) => {
-  const { id } = Object.fromEntries(formData);
+export const deleteUser = async (id) => {
 
   try {
     connectToDB();
@@ -133,7 +132,7 @@ export const addPatient = async (formData) => {
     const newPatient = new Patient({
       name,
       ageSex: `${age}/${sex}`, // Combining age and sex into one field as per schema
-      tests: `${tests}, ${test2}`, // Combining the tests fields
+      tests: `${tests}`, // Combining the tests fields
       testType,
       costTotal,
       transactionMode,
@@ -173,7 +172,7 @@ export const updatePatient = async (formData) => {
     const updateFields = {
       name,
       ageSex: `${age}/${sex}`,
-      tests: `${tests}, ${test2}`,
+      tests: `${tests}`,
       testType,
       costTotal,
       transactionMode,
@@ -253,9 +252,7 @@ export const updatePatient = async (formData) => {
 // };
 
 // Delete a patient
-export const deletePatient = async (formData) => {
-  const { id } = Object.fromEntries(formData);
-
+export const deletePatient = async (id) => {
   try {
     connectToDB();
     await Patient.findByIdAndDelete(id);
@@ -348,9 +345,7 @@ export const updateTest = async (formData) => {
 
 
 // Delete a test
-export const deleteTest = async (formData) => {
-  const { id } = Object.fromEntries(formData);
-
+export const deleteTest = async (id) => {
   try {
     connectToDB();
     await Test.findByIdAndDelete(id);

@@ -1,9 +1,14 @@
 import { updatePatient } from "@/app/lib/actions";
-import { fetchPatient } from "@/app/lib/data";
+import { fetchPatient, fetchTests } from "@/app/lib/data";
 import styles from "@/app/ui/dashboard/patients/singlePatient/singlePatient.module.css";
+import dynamic from "next/dynamic";
 
+const DropDown = dynamic(() => import("./DropDown"), { ssr: false });
 const SinglePatientPage = async ({ params }) => {
   const { id } = params;
+  // const q = searchParams?.q || "";
+  // const page = searchParams?.page || 1;
+  const { count, tests } = await fetchTests();
   const patient = await fetchPatient(id);
 
   return (
@@ -16,19 +21,19 @@ const SinglePatientPage = async ({ params }) => {
           <input type="text" name="name" defaultValue={patient.name} />
 
           <label>Age</label>
-          <input type="number" name="age" defaultValue={patient.age} />
+          <input type="text" name="age" defaultValue={(patient.ageSex).split("/")[0]}/>
 
-          <label>Sex</label>
-          <select name="sex" defaultValue={patient.sex}>
+          <label>Sex : {(patient.ageSex).split("/")[1]}</label>
+          <select name="sex" defaultValue={(patient.ageSex).split("/")[1]}>
             <option value={"F"}>Female</option>
             <option value={"M"}>Male</option>
           </select>
 
-          <label>Tests</label>
-          <input type="text" name="tests" defaultValue={patient.tests} />
-
-          <label>Additional Tests</label>
-          <input type="text" name="test2" defaultValue={patient.test2} />
+          {/* <label>Tests</label>
+          <input type="text" name="tests" defaultValue={patient.tests} /> */}
+          <div>
+          <DropDown options={tests} />
+        </div>
 
           <label>Test Type</label>
           <select name="testType" defaultValue={patient.testType}>

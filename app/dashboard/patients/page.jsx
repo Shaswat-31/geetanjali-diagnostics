@@ -1,4 +1,3 @@
-// patients/page.jsx
 import { deletePatient } from "@/app/lib/actions";
 import { fetchPatients, getPatientsByDate } from "@/app/lib/data";
 import Pagination from "@/app/ui/dashboard/pagination/pagination";
@@ -8,49 +7,53 @@ import Link from "next/link";
 import { auth } from "@/app/auth";
 import DateRangeForm from "@/app/_components/datePicker";
 import { getEndOfMonth, getStartOfMonth } from "@/app/lib/dateUtils";
+import DeleteBtn from "@/app/_components/deleteBtn";
+import dynamic from "next/dynamic";
+import { Button } from "@chakra-ui/react";
+
+// Dynamically import the ViewTestModal to enable client-side rendering
+const ViewTestModal = dynamic(() => import("@/app/_components/ViewTestModal"), { ssr: false });
+
 const PatientsPage = async ({ searchParams }) => {
   const { user } = await auth();
   const q = searchParams?.q || "";
   const page = searchParams?.page || 1;
   const { count, patients } = await fetchPatients(q, page);
-  const monthStart=getStartOfMonth();
-  const monthEnd=getEndOfMonth();
+  const monthStart = getStartOfMonth();
+  const monthEnd = getEndOfMonth();
   const startDateParam = searchParams?.startDate || monthStart;
   const endDateParam = searchParams?.endDate || monthEnd;
-  
-  // Ensure startDate starts at the beginning of the day
+
   const startDate = new Date(startDateParam);
   startDate.setHours(0, 0, 0, 0);
 
-  // Ensure endDate ends at the end of the day
   const endDate = new Date(endDateParam);
   endDate.setHours(23, 59, 59, 999);
+
   const filteredPatients = patients.filter(patient => {
     const patientDate = new Date(patient.createdAt);
-    return patientDate >= new Date(startDate) && patientDate <= new Date(endDate);
+    return patientDate >= startDate && patientDate <= endDate;
   });
 
-  // Sort patients by date (optional)
   filteredPatients.sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt));
 
-  const patients1=await getPatientsByDate(q,startDate,endDate);
+  const patientsByDate = await getPatientsByDate(q, startDate, endDate);
+
   return (
     <div className={styles.container}>
       <div className="flex flex-col gap-4 mb-4">
-        <DateRangeForm/>
+        <DateRangeForm />
         <div className="flex flex-rows justify-between">
-        <Search placeholder="Search for a patient..." />
-        <div className="flex gap-2">
-        <Link href="/dashboard/patients/add">
-            <button className={styles.addButton}>Add New</button>
-          </Link>
-          <a href={`/api/downloadPatients?startDate=${startDateParam}&endDate=${endDateParam}&q=${q}`} download>
-          <button className={styles.addButton}>Download Data</button>
-        </a>
+          <Search placeholder="Search for a patient..." />
+          <div className="flex gap-2">
+            <Link href="/dashboard/patients/add">
+              <button className={styles.addButton}>Add New</button>
+            </Link>
+            <a href={`/api/downloadPatients?startDate=${startDateParam}&endDate=${endDateParam}&q=${q}`} download>
+              <button className={styles.addButton}>Download Data</button>
+            </a>
+          </div>
         </div>
-        </div>
-       
-         
       </div>
       <table className={styles.table}>
         <thead>
@@ -64,17 +67,13 @@ const PatientsPage = async ({ searchParams }) => {
             <td>Doctor Referred</td>
             <td>Place</td>
             <td>Added By</td>
-            {
-              user.isAdmin && 
-              <td>Action</td>
-            }
-           
+            <td>Action</td>
           </tr>
         </thead>
         <tbody>
-          {patients1.map((patient,index) => (
+          {patientsByDate.map((patient, index) => (
             <tr key={patient.id}>
-              <td>{index+1}.</td>
+              <td>{index + 1}.</td>
               <td>{patient.name}</td>
               <td>{patient.ageSex}</td>
               <td>{new Date(patient.date).toDateString()}</td>
@@ -82,25 +81,21 @@ const PatientsPage = async ({ searchParams }) => {
               <td>{patient.transactionMode}</td>
               <td>{patient.doctorReferred}</td>
               <td>{patient.place}</td>
+              <td>{patient.addedBy}</td>
               <td>
-                {patient.addedBy}
-              </td>
-              <td>
-              {user.isAdmin && (
                 <div className={styles.buttons}>
-                  <Link href={`/dashboard/patients/${patient.id}`}>
-                    <button className={`${styles.button} ${styles.view}`}>
-                      View
-                    </button>
-                  </Link>
-                    <form action={deletePatient}>
-                      <input type="hidden" name="id" value={patient.id} />
-                      <button className={`${styles.button} ${styles.delete}`}>
-                        Delete
-                      </button>
-                    </form>
+                  {user.isAdmin && (
+                    <>
+                      <Link href={`/dashboard/patients/${patient.id}`}>
+                        <button className={`${styles.button} ${styles.view}`}>
+                          View
+                        </button>
+                      </Link>
+                      <DeleteBtn id={patient.id} comp="Patient" />
+                    </>
+                  )}
+                  <ViewTestModal data={patient.tests} />
                 </div>
-                 )}
               </td>
             </tr>
           ))}

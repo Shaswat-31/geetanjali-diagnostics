@@ -5,7 +5,10 @@ import { Button, FormControl, FormLabel, Input, Modal, ModalBody, ModalCloseButt
 import { addPatient } from '@/app/lib/actions';
 import { Select } from '@chakra-ui/react'
 import styles from "../card/card.module.css"
-const AddPatientModal = () => {
+import dynamic from 'next/dynamic';
+
+const DownDrop = dynamic(() => import("./DownDrop"), { ssr: false });
+const AddPatientModal = ({data}) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   // Define form state
@@ -94,23 +97,25 @@ const AddPatientModal = () => {
                   ))}
                 </select>
               </FormControl> */}
-              <FormControl id="tests">
+              <FormControl id="tests" isRequired mt={4}>
                       <FormControl>
-                        <Input type='hidden'
+                        {/* <Input type='hidden'
                         name="tests"
                         value=""
-                        />
+                        /> */}
+                         <FormLabel>Test</FormLabel>
+                        <DownDrop options={data}/>
                       </FormControl>
               </FormControl>
               <FormControl id="test2" mt={4}>
-                <FormLabel>Test</FormLabel>
-                <Input
+                {/* <FormLabel>Test</FormLabel> */}
+                {/* <Input
                   type="text"
                   name="test2"
                   value={formData.test2}
                   onChange={handleChange}
                   placeholder="Enter tests"
-                />
+                /> */}
               </FormControl>
               <FormControl id="testType" isRequired mt={4}>
                 <FormLabel>Test Type</FormLabel>

@@ -7,6 +7,8 @@ import Image from "next/image";
 import Link from "next/link";
 import { auth } from "@/app/auth";
 import {Unauthorized} from "@/app/_components/unauthorized"
+import { Avatar } from "@chakra-ui/react";
+import DeleteBtn from "@/app/_components/deleteBtn";
 
 const UsersPage = async ({ searchParams }) => {
   const { user } = await auth();
@@ -56,13 +58,7 @@ const UsersPage = async ({ searchParams }) => {
             <tr key={emp.id}>
               <td>
                 <div className={styles.user}>
-                  <Image
-                    src={emp.img || "/noavatar.png"}
-                    alt=""
-                    width={40}
-                    height={40}
-                    className={styles.userImage}
-                  />
+                <Avatar name={emp.username}/>
                   {emp.username}
                 </div>
               </td>
@@ -78,12 +74,7 @@ const UsersPage = async ({ searchParams }) => {
                     </button>
                   </Link>
                 
-                    <form action={deleteUser}>
-                    <input type="hidden" name="id" value={(emp.id)} />
-                    <button className={`${styles.button} ${styles.delete}`}>
-                      Delete
-                    </button>
-                  </form>
+                   <DeleteBtn id={emp.id} comp="Employee"/>
                   
                 </div>)}
               </td>
