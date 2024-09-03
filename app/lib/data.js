@@ -81,7 +81,7 @@ export const fetchPatients = async (q, page) => {
   };
   export const fetchTests = async (q, page) => {
     const regex = new RegExp(q, "i");
-    const ITEM_PER_PAGE = 10;
+    const ITEM_PER_PAGE = 100;
   
     try {
       connectToDB();
