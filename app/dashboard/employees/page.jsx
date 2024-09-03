@@ -64,7 +64,11 @@ const UsersPage = async ({ searchParams }) => {
               </td>
               <td>{emp.email}</td>
               <td>{emp.createdAt?.toString().slice(4, 16)}</td>
-              <td>{emp.isAdmin ? "Admin" : "Employee"}</td>
+              <td> {emp.isAdmin
+              ? "Administrator"
+              : emp.isManager
+              ? "Manager"
+              : "Employee"}</td>
               <td>
               {user.isAdmin && (
                 <div className={styles.buttons}>

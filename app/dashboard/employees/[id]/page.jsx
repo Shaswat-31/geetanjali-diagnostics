@@ -42,7 +42,11 @@ const SingleUserPage = async ({ params }) => {
             <option value={true}>Yes</option>
             <option value={false}>No</option>
           </select>
-
+          <label>Is Manager?</label>
+          <select name="isManager" defaultValue={user.isManager}>
+          <option value={true}>Yes</option>
+          <option value={false}>No</option>
+        </select>
           <button type="submit">Update</button>
         </form>
       </div>
