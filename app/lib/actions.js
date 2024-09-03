@@ -8,9 +8,9 @@ import bcrypt from "bcrypt";
 import { signIn } from "../auth";
 import { auth } from "@/app/auth";
 export const addUser = async (formData) => {
-  const { username, email, password, phone, address, isAdmin } =
-    Object.fromEntries(formData);
+  const data = Object.fromEntries(formData);
 
+  const { username, email, password, phone, address, isAdmin, isManager } = data;
   try {
     connectToDB();
 
@@ -24,8 +24,8 @@ export const addUser = async (formData) => {
       phone,
       address,
       isAdmin,
+      isManager,
     });
-
     await newUser.save();
   } catch (err) {
     console.log(err);
@@ -37,7 +37,7 @@ export const addUser = async (formData) => {
 };
 
 export const updateUser = async (formData) => {
-  const { id, username, email, password, phone, address, isAdmin } =
+  const { id, username, email, password, phone, address, isAdmin, isManager } =
     Object.fromEntries(formData);
     
   try {
@@ -51,6 +51,7 @@ export const updateUser = async (formData) => {
       phone,
       address,
       isAdmin,
+      isManager,
     };
 
     Object.keys(updateFields).forEach(
@@ -119,7 +120,6 @@ export const addPatient = async (formData) => {
     age,
     sex,
     tests,
-    test2,
     testType,
     costTotal,
     transactionMode,
@@ -150,6 +150,8 @@ export const addPatient = async (formData) => {
   revalidatePath("/dashboard/patients");
   redirect("/dashboard/patients");
 };
+
+
 
 export const updatePatient = async (formData) => {
   const {

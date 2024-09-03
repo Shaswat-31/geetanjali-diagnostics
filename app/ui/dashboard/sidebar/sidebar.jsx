@@ -57,11 +57,11 @@ const Sidebar = async () => {
         <div className={styles.userDetail}>
           <span className={styles.username}>{user.username}</span>
           <span className={styles.userTitle}>
-            {
-              user.isAdmin?
-              "Administrator" :
-              "Employee"
-            }
+          {user.isAdmin
+              ? "Administrator"
+              : user.isManager
+              ? "Manager"
+              : "Employee"}
             </span>
         </div>
       </div>

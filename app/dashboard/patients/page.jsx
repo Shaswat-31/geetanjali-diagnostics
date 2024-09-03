@@ -36,7 +36,9 @@ const PatientsPage = async ({ searchParams }) => {
   });
 
   filteredPatients.sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt));
-
+  console.log(user.isAdmin);
+  console.log(user.email);
+  console.log(user.isManager);
   const patientsByDate = await getPatientsByDate(q, startDate, endDate);
 
   const totalCost = patientsByDate.reduce((sum, patient) => sum + patient.costTotal, 0);
@@ -88,7 +90,7 @@ const PatientsPage = async ({ searchParams }) => {
               <td>{patient.addedBy}</td>
               <td>
                 <div className={styles.buttons}>
-                  {user.isAdmin && (
+                  {(user.isAdmin || user.isManager) && (
                     <>
                       <Link href={`/dashboard/patients/${patient.id}`}>
                         <button className={`${styles.button} ${styles.view}`}>

@@ -15,6 +15,11 @@ const AddUserPage = () => {
           <option value={true}>Yes</option>
           <option value={false}>No</option>
         </select>
+        <select name="isManager" id="isManager">
+          <option value={false}>Is Manager?</option>
+          <option value={true}>Yes</option>
+          <option value={false}>No</option>
+        </select>
         <textarea name="address" id="address" rows="16" placeholder="Address"></textarea>
         <button type="submit">Submit</button>
       </form>

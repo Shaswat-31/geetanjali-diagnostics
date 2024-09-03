@@ -25,6 +25,10 @@ const userSchema = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
+    isManager: {
+      type: Boolean,
+      default: false,
+    },
     phone: {
       type: String,
     },

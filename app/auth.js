@@ -32,7 +32,8 @@ const login = async (credentials) => {
 
     return {
       username: user.username,
-      isAdmin: user.isAdmin
+      isAdmin: user.isAdmin,
+      isManager:user.isManager
     };
   } catch (err) {
     console.log("been an error: " + err);
@@ -59,6 +60,7 @@ export const { signIn, signOut, auth } = NextAuth({
       if (user) {
         token.username = user.username;
         token.isAdmin = user.isAdmin;
+        token.isManager=user.isManager;
       }
       return token;
     },
@@ -66,6 +68,7 @@ export const { signIn, signOut, auth } = NextAuth({
       if (token) {
         session.user.username = token.username;
         session.user.isAdmin = token.isAdmin;
+        session.user.isManager=token.isManager;
       }
       return session;
     },

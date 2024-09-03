@@ -14,6 +14,17 @@ const TestsPage = async ({ searchParams }) => {
     const page = searchParams?.page || 1;
     const { count, tests } = await fetchTests(q, page);
   
+  //   if (!user.isAdmin) {
+  //     return (
+  //       // <Unauthorized/>
+  //       <div className="flex flex-col items-center justify-center min-h-screen">
+  //   <img src="/notAuth.png" alt="Not Authorized" className="w-64 h-64 mb-8" />
+  //   <h1 className="text-3xl font-bold text-red-600">Sorry, you are not authorized.</h1>
+  //   <p className="mt-4 text-gray-600">Please contact the administrator if you believe this is a mistake.</p>
+  // </div>
+  
+  //     );
+  //   }
     return (
       <div className={styles.container}>
         <div className={styles.top}>
@@ -31,7 +42,9 @@ const TestsPage = async ({ searchParams }) => {
               <td>Serial</td>
               <td>Test Name</td>
               <td>Inventory Status</td>
-              <td>Chemical Cost</td>
+              {
+                user.isAdmin && <td>Chemical Cost</td>
+              }
               <td>Area Rate</td>
               <td>Regular Cost</td>
               <td>Night Cost</td>
@@ -45,7 +58,10 @@ const TestsPage = async ({ searchParams }) => {
                 <td>{index+1}</td>
                 <td>{test.testName}</td>
                 <td>{test.inventoryStatus}</td>
-                <td>{test.chemicalCost}</td>
+                {
+                  user.isAdmin && <td>{test.chemicalCost}</td>
+                }
+               
                 <td>{test.areaRate}</td>
                 <td>{test.regularCost}</td>
                 <td>{test.nightCost}</td>
