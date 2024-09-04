@@ -36,7 +36,7 @@ const FinancePage = () => {
       },
       {
         label: "Number of Tests",
-        data: patients.map((patient) => JSON.parse(patient.tests).length),
+        data: testsData,
         backgroundColor: "rgba(153, 102, 255, 0.6)",
       },
     ],
