@@ -230,36 +230,24 @@ export const fetchPatients = async (q, page) => {
 //     throw new Error("Failed to fetch card data.");
 //   }
 // };
+
 export const fetchCardsData = async () => {
   connectToDB();
   const { user } = await auth();
   try {
-    // const userCount = await User.countDocuments();
-    
     const startOfDay = getStartOfDay();
     const endOfDay = getEndOfDay();
-    const startOfMonth = getStartOfMonth();  // Function to get start of the current month
-    const endOfMonth = getEndOfMonth();      // Function to get end of the current month
-    
-    const startOfWeek = getStartOfWeek();
-    const endOfWeek = getEndOfWeek();
+    const startOfMonth = getStartOfMonth();
+    const endOfMonth = getEndOfMonth();
 
+    // Patient counts
     const patientCount = await Patient.countDocuments({
       createdAt: { $gte: startOfMonth, $lte: endOfMonth }
     });
-    
+
     const patientCountToday = await Patient.countDocuments({
       createdAt: { $gte: startOfDay, $lte: endOfDay }
     });
-    
-    const testCount = await Test.countDocuments();
-    const testCountToday = await Test.countDocuments({
-      createdAt: { $gte: startOfDay, $lte: endOfDay }
-    });
-    
-    // const userCountToday = await User.countDocuments({
-    //   createdAt: { $gte: startOfDay, $lte: endOfDay }
-    // });
 
     // Calculate total cost for today
     const totalCostToday = await Patient.aggregate([
@@ -291,6 +279,49 @@ export const fetchCardsData = async () => {
       }
     ]);
 
+    // Count tests
+    const testsCountToday = await Patient.aggregate([
+      {
+        $match: {
+          createdAt: { $gte: startOfDay, $lte: endOfDay }
+        }
+      },
+      {
+        $project: {
+          testCount: {
+            $size: { $split: ["$tests", ","] }
+          }
+        }
+      },
+      {
+        $group: {
+          _id: null,
+          totalTests: { $sum: "$testCount" }
+        }
+      }
+    ]);
+
+    const testsCountThisMonth = await Patient.aggregate([
+      {
+        $match: {
+          createdAt: { $gte: startOfMonth, $lte: endOfMonth }
+        }
+      },
+      {
+        $project: {
+          testCount: {
+            $size: { $split: ["$tests", ","] }
+          }
+        }
+      },
+      {
+        $group: {
+          _id: null,
+          totalTests: { $sum: "$testCount" }
+        }
+      }
+    ]);
+
     const cards = [
       {
         id: 1,
@@ -301,10 +332,11 @@ export const fetchCardsData = async () => {
       {
         id: 2,
         title: "Tests",
-        number: testCount,
-        numberToday: testCountToday,
+        number: testsCountThisMonth.length > 0 ? testsCountThisMonth[0].totalTests : 0,
+        numberToday: testsCountToday.length > 0 ? testsCountToday[0].totalTests : 0,
       },
     ];
+
     if (user?.isAdmin) {
       cards.push({
         id: 3,
