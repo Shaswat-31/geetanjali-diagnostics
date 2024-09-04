@@ -17,7 +17,7 @@ const FinancePage = () => {
       const result = await response.json();
       setPatients(result);
     } else {
-      console.error('Failed to fetch data:', response.statusText);
+      console.error("Failed to fetch data:", response.statusText);
     }
     setLoading(false);
   };
@@ -43,27 +43,29 @@ const FinancePage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-100 p-8">
+    <div className="min-h-screen p-8" style={{ backgroundColor: "var(--bg)", color: "var(--text)" }}>
       <h1 className="text-3xl font-bold mb-6 text-center">Finance</h1>
 
       <div className="flex flex-col md:flex-row items-center justify-center mb-8">
         <div className="mb-4 md:mb-0 md:mr-4">
-          <label className="block mb-2 text-gray-600">Start Date</label>
+          <label className="block mb-2" style={{ color: "var(--textSoft)" }}>Start Date</label>
           <input
             type="date"
             value={startDate}
             onChange={(e) => setStartDate(e.target.value)}
-            className="px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            className="px-4 py-2 border rounded-lg focus:outline-none focus:ring-2"
+            style={{ backgroundColor: "var(--bgSoft)", color: "var(--text)" }}
           />
         </div>
 
         <div className="md:mr-4">
-          <label className="block mb-2 text-gray-600">End Date</label>
+          <label className="block mb-2" style={{ color: "var(--textSoft)" }}>End Date</label>
           <input
             type="date"
             value={endDate}
             onChange={(e) => setEndDate(e.target.value)}
-            className="px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            className="px-4 py-2 border rounded-lg focus:outline-none focus:ring-2"
+            style={{ backgroundColor: "var(--bgSoft)", color: "var(--text)" }}
           />
         </div>
 
@@ -75,40 +77,40 @@ const FinancePage = () => {
         </button>
       </div>
 
-      <div className="bg-white shadow-lg rounded-lg p-6 mb-8">
-        <h2 className="text-xl font-semibold mb-4">Summary</h2>
+      <div className="shadow-lg rounded-lg p-6 mb-8" style={{ backgroundColor: "var(--bgSoft)" }}>
+        <h2 className="text-xl font-semibold mb-4" style={{ color: "var(--textSoft)" }}>Summary</h2>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <div className="p-4 bg-blue-100 rounded-lg text-center">
+          <div className="p-4 rounded-lg text-center" style={{ backgroundColor: "#cfe2ff", color: "#084298" }}>
             <p className="text-lg font-bold">Total Patients</p>
             <p className="text-2xl">{patients.length}</p>
           </div>
-          <div className="p-4 bg-green-100 rounded-lg text-center">
+          <div className="p-4 rounded-lg text-center" style={{ backgroundColor: "#d1e7dd", color: "#0f5132" }}>
             <p className="text-lg font-bold">Total Tests</p>
             <p className="text-2xl">{totalTests}</p>
           </div>
-          <div className="p-4 bg-yellow-100 rounded-lg text-center">
+          <div className="p-4 rounded-lg text-center" style={{ backgroundColor: "#fff3cd", color: "#664d03" }}>
             <p className="text-lg font-bold">Total Cost</p>
             <p className="text-2xl">₹{totalCost}</p>
           </div>
         </div>
       </div>
 
-      <div className="bg-white shadow-lg rounded-lg p-6">
-        <h2 className="text-xl font-semibold mb-4">Patient Financial Data</h2>
+      <div className="shadow-lg rounded-lg p-6" style={{ backgroundColor: "var(--bgSoft)" }}>
+        <h2 className="text-xl font-semibold mb-4" style={{ color: "var(--textSoft)" }}>Patient Financial Data</h2>
         <div className="overflow-x-auto">
-          <table className="min-w-full bg-white">
+          <table className="min-w-full" style={{ backgroundColor: "var(--bg)", color: "var(--text)" }}>
             <thead>
               <tr>
-                <th className="px-6 py-3 border-b border-gray-200 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th className="px-6 py-3 border-b text-left text-xs font-medium uppercase tracking-wider" style={{ backgroundColor: "var(--bgSoft)", color: "var(--textSoft)" }}>
                   Patient Name
                 </th>
-                <th className="px-6 py-3 border-b border-gray-200 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th className="px-6 py-3 border-b text-left text-xs font-medium uppercase tracking-wider" style={{ backgroundColor: "var(--bgSoft)", color: "var(--textSoft)" }}>
                   Tests Done
                 </th>
-                <th className="px-6 py-3 border-b border-gray-200 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th className="px-6 py-3 border-b text-left text-xs font-medium uppercase tracking-wider" style={{ backgroundColor: "var(--bgSoft)", color: "var(--textSoft)" }}>
                   Total Cost
                 </th>
-                <th className="px-6 py-3 border-b border-gray-200 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th className="px-6 py-3 border-b text-left text-xs font-medium uppercase tracking-wider" style={{ backgroundColor: "var(--bgSoft)", color: "var(--textSoft)" }}>
                   Doctor Referred
                 </th>
               </tr>
@@ -116,20 +118,14 @@ const FinancePage = () => {
             <tbody>
               {patients.map((patient) => (
                 <tr key={patient._id}>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                    {patient.name}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                  <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">{patient.name}</td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm">
                     {JSON.parse(patient.tests).map((test, i) => (
-                    <div key={i}>{test}</div>
-                  ))}
+                      <div key={i}>{test}</div>
+                    ))}
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                    ₹{patient.costTotal}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                    {patient.doctorReferred}
-                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm">₹{patient.costTotal}</td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm">{patient.doctorReferred}</td>
                 </tr>
               ))}
             </tbody>
@@ -137,8 +133,8 @@ const FinancePage = () => {
         </div>
       </div>
 
-      <div className="bg-white shadow-lg rounded-lg p-6 mt-8">
-        <h2 className="text-xl font-semibold mb-4">Cost vs Tests Chart</h2>
+      <div className="shadow-lg rounded-lg p-6 mt-8" style={{ backgroundColor: "var(--bgSoft)" }}>
+        <h2 className="text-xl font-semibold mb-4" style={{ color: "var(--textSoft)" }}>Cost vs Tests Chart</h2>
         <Bar data={chartData} />
       </div>
     </div>
