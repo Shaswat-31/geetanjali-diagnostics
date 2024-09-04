@@ -58,9 +58,13 @@ const PatientsPage = async ({ searchParams }) => {
           </div>
         </div>
       </div>
-      <div className="flex justify-end mb-4">
+      
+      {user.isAdmin &&
+        <div className="flex justify-end mb-4">
         <strong>Total Cost: {totalCost}</strong>
       </div>
+      }
+      
       <table className={styles.table}>
         <thead>
           <tr>
