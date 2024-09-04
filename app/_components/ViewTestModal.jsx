@@ -15,7 +15,7 @@ import {
 
 function ViewTestModal({ data }) {
   const { isOpen, onOpen, onClose } = useDisclosure();
-
+  const testArray=JSON.parse(data)
   return (
     <>
       <Button colorScheme="blue" onClick={onOpen}>View Tests</Button>
@@ -26,7 +26,11 @@ function ViewTestModal({ data }) {
           <ModalHeader>Test Details</ModalHeader>
           <ModalCloseButton />
           <ModalBody>
-           {data}
+          {testArray.map((item) => (
+            <div>
+              {item}
+            </div>
+          ))}
           </ModalBody>
           <ModalFooter>
             <Button colorScheme="blue" mr={3} onClick={onClose}>
