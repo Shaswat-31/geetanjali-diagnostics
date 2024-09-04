@@ -44,7 +44,7 @@ const FinancePage = () => {
 
   return (
     <div className="min-h-screen bg-gray-100 p-8">
-      <h1 className="text-3xl font-bold mb-6 text-center">Finance Dashboard</h1>
+      <h1 className="text-3xl font-bold mb-6 text-center">Finance</h1>
 
       <div className="flex flex-col md:flex-row items-center justify-center mb-8">
         <div className="mb-4 md:mb-0 md:mr-4">
