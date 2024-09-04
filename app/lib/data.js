@@ -280,48 +280,53 @@ export const fetchCardsData = async () => {
     ]);
 
     // Count tests
-    const testsCountToday = await Patient.aggregate([
-      {
-        $match: {
-          createdAt: { $gte: startOfDay, $lte: endOfDay }
-        }
-      },
-      {
-        $project: {
-          testCount: {
-            $size: { $split: ["$tests", ","] }
-          }
-        }
-      },
-      {
-        $group: {
-          _id: null,
-          totalTests: { $sum: "$testCount" }
-        }
-      }
-    ]);
+    // const testsCountToday = await Patient.aggregate([
+    //   {
+    //     $match: {
+    //       createdAt: { $gte: startOfDay, $lte: endOfDay }
+    //     }
+    //   },
+    //   {
+    //     $project: {
+    //       testCount: {
+    //         $size: { $split: ["$tests", ","] }
+    //       }
+    //     }
+    //   },
+    //   {
+    //     $group: {
+    //       _id: null,
+    //       totalTests: { $sum: "$testCount" }
+    //     }
+    //   }
+    // ]);
 
-    const testsCountThisMonth = await Patient.aggregate([
-      {
-        $match: {
-          createdAt: { $gte: startOfMonth, $lte: endOfMonth }
-        }
-      },
-      {
-        $project: {
-          testCount: {
-            $size: { $split: ["$tests", ","] }
-          }
-        }
-      },
-      {
-        $group: {
-          _id: null,
-          totalTests: { $sum: "$testCount" }
-        }
-      }
-    ]);
-
+    // const testsCountThisMonth = await Patient.aggregate([
+    //   {
+    //     $match: {
+    //       createdAt: { $gte: startOfMonth, $lte: endOfMonth }
+    //     }
+    //   },
+    //   {
+    //     $project: {
+    //       testCount: {
+    //         $size: { $split: ["$tests", ","] }
+    //       }
+    //     }
+    //   },
+    //   {
+    //     $group: {
+    //       _id: null,
+    //       totalTests: { $sum: "$testCount" }
+    //     }
+    //   }
+    // ]);
+    const patients=await getPatientsByDate("",startOfMonth,endOfMonth);
+    const testsData = patients.map((patient) => JSON.parse(patient.tests).length);
+  const testsCountThisMonth = testsData.reduce((acc, count) => acc + count, 0);
+  const patientsToday=await getPatientsByDate("",startOfDay,endOfDay);
+  const testsDataToday = patientsToday.map((patient) => JSON.parse(patient.tests).length);
+  const testsCountToday = testsDataToday.reduce((acc, count) => acc + count,0);
     const cards = [
       {
         id: 1,
@@ -332,8 +337,8 @@ export const fetchCardsData = async () => {
       {
         id: 2,
         title: "Tests",
-        number: testsCountThisMonth.length > 0 ? testsCountThisMonth[0].totalTests : 0,
-        numberToday: testsCountToday.length > 0 ? testsCountToday[0].totalTests : 0,
+        number: testsCountThisMonth,
+        numberToday:  testsCountToday,
       },
     ];
 

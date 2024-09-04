@@ -36,9 +36,6 @@ const PatientsPage = async ({ searchParams }) => {
   });
 
   filteredPatients.sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt));
-  console.log(user.isAdmin);
-  console.log(user.email);
-  console.log(user.isManager);
   const patientsByDate = await getPatientsByDate(q, startDate, endDate);
 
   const totalCost = patientsByDate.reduce((sum, patient) => sum + patient.costTotal, 0);
