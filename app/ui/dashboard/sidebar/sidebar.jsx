@@ -4,16 +4,16 @@ import styles from "./sidebar.module.css";
 import {
   MdDashboard,
   MdSupervisedUserCircle,
+  MdShoppingBag,
+  MdAttachMoney,
+  MdOutlineSettings,
+  MdHelpCenter,
   MdLogout,
 } from "react-icons/md";
-import { RiMoneyDollarCircleLine } from "react-icons/ri";
 import { auth, signOut } from "@/app/auth";
 import { Avatar } from "@chakra-ui/react";
 import { FaHospitalUser } from "react-icons/fa6";
 import { LiaHospitalAltSolid } from "react-icons/lia";
-const { user } = await auth();
-  
-// Define menu items dynamically based on user role
 const menuItems = [
   {
     title: "Pages",
@@ -38,20 +38,12 @@ const menuItems = [
         path: "/dashboard/tests",
         icon: <FaHospitalUser />,
       },
-      ...(user.isAdmin
-        ? [
-            {
-              title: "Finance",
-              path: "/dashboard/finance",
-              icon: <RiMoneyDollarCircleLine />,
-            }
-          ]
-        : []),
     ],
   },
   {
     title: "User",
-    list: [],
+    list: [
+    ],
   },
 ];
 

@@ -15,9 +15,7 @@ import {
 
 function ViewTestModal({ data }) {
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const testArray = JSON.parse(data);
 
-  // Get the length of the array
   return (
     <>
       <Button colorScheme="blue" onClick={onOpen}>View Tests</Button>
@@ -28,16 +26,7 @@ function ViewTestModal({ data }) {
           <ModalHeader>Test Details</ModalHeader>
           <ModalCloseButton />
           <ModalBody>
-          {testArray.length>0?
-          testArray.map((test, index) => (
-        <div key={index}>
-          Test {index + 1}: {test}
-        </div>
-      ))
-      :
-      <h1>No test added</h1>
-    
-        }
+           {data}
           </ModalBody>
           <ModalFooter>
             <Button colorScheme="blue" mr={3} onClick={onClose}>
