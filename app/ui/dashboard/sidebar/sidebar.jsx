@@ -4,7 +4,10 @@ import styles from "./sidebar.module.css";
 import {
   MdDashboard,
   MdSupervisedUserCircle,
+  MdShoppingBag,
   MdAttachMoney,
+  MdOutlineSettings,
+  MdHelpCenter,
   MdLogout,
 } from "react-icons/md";
 import { auth, signOut } from "@/app/auth";
@@ -35,11 +38,6 @@ const menuItems = [
         path: "/dashboard/tests",
         icon: <FaHospitalUser />,
       },
-      {
-        title:"Finance",
-        path:"/dashboard/finance",
-        icon:<MdAttachMoney/>
-      }
     ],
   },
   {
