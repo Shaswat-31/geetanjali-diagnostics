@@ -4,16 +4,14 @@ import styles from "./sidebar.module.css";
 import {
   MdDashboard,
   MdSupervisedUserCircle,
-  MdShoppingBag,
   MdAttachMoney,
-  MdOutlineSettings,
-  MdHelpCenter,
   MdLogout,
 } from "react-icons/md";
 import { auth, signOut } from "@/app/auth";
 import { Avatar } from "@chakra-ui/react";
 import { FaHospitalUser } from "react-icons/fa6";
 import { LiaHospitalAltSolid } from "react-icons/lia";
+const { user } = await auth();
 const menuItems = [
   {
     title: "Pages",
@@ -38,18 +36,24 @@ const menuItems = [
         path: "/dashboard/tests",
         icon: <FaHospitalUser />,
       },
+      ...(user.isAdmin
+        ? [
+            {
+              title: "Finance",
+              path: "/dashboard/finance",
+              icon: <MdAttachMoney />,
+            }
+          ]
+        : []),
     ],
   },
   {
     title: "User",
-    list: [
-    ],
+    list: [],
   },
 ];
-
 const Sidebar = async () => {
-  const { user } = await auth();
-  console.log(user.isAdmin);
+  
   return (
     <div className={styles.container}>
       <div className={styles.user}>
