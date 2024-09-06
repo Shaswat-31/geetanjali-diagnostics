@@ -24,8 +24,29 @@ const FinancePage = () => {
 
   const totalCost = patients.reduce((acc, patient) => acc + patient.costTotal, 0);
   const testsData = patients.map((patient) => JSON.parse(patient.tests).length);
+  const testsNames=patients.map((patient)=>JSON.parse(patient.tests));
   const totalTests = testsData.reduce((acc, count) => acc + count, 0);
+  function getTestFrequencies(testsNames) {
+    const frequencyMap = {};
+  
+    // Iterate through each array inside testsNames
+    testsNames.forEach(testArray => {
+      testArray.forEach(test => {
+        // If the test already exists in frequencyMap, increment its count
+        if (frequencyMap[test]) {
+          frequencyMap[test]++;
+        } else {
+          // Otherwise, initialize the count to 1
+          frequencyMap[test] = 1;
+        }
+      });
+    });
+  
+    return frequencyMap;
+  }
 
+  // Get test frequencies
+  const testFrequencies = getTestFrequencies(testsNames);
   const chartData = {
     labels: patients.map((patient) => patient.name),
     datasets: [
@@ -94,6 +115,33 @@ const FinancePage = () => {
           </div>
         </div>
       </div>
+      <div
+  className="shadow-lg rounded-lg p-6 mb-8"
+  style={{ backgroundColor: "var(--bgSoft)" }}
+>
+  <h2
+    className="text-xl font-semibold mb-4 text-center"
+    style={{ color: "var(--textSoft)" }}
+  >
+    Test Frequencies
+  </h2>
+  <ul className="space-y-2">
+    {Object.entries(testFrequencies).map(([test, frequency]) => (
+      <li
+        key={test}
+        className="flex justify-between items-center p-4 rounded-md"
+        style={{
+          backgroundColor: "var(--bgSoft)",
+          color: "var(--textSoft)"
+        }}
+      >
+        <span className="font-medium">{test}</span>
+        <span className="text-sm">{frequency}</span>
+      </li>
+    ))}
+  </ul>
+</div>
+
 
       <div className="shadow-lg rounded-lg p-6" style={{ backgroundColor: "var(--bgSoft)" }}>
         <h2 className="text-xl font-semibold mb-4" style={{ color: "var(--textSoft)" }}>Patient Financial Data</h2>
