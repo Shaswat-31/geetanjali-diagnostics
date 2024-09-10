@@ -38,7 +38,7 @@ const PatientsPage = async ({ searchParams }) => {
   filteredPatients.sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt));
   const patientsByDate = await getPatientsByDate(q, startDate, endDate);
 
-  const totalCost = patientsByDate.reduce((sum, patient) => sum + patient.costTotal, 0);
+  // const totalCost = patientsByDate.reduce((sum, patient) => sum + patient.costTotal, 0);
   return (
     <div className={styles.container}>
       <div className="flex flex-col gap-4 mb-4">
@@ -55,9 +55,9 @@ const PatientsPage = async ({ searchParams }) => {
           </div>
         </div>
       </div>
-      <div className="flex justify-end mb-4">
+      {/* <div className="flex justify-end mb-4">
         <strong>Total Cost: {totalCost}</strong>
-      </div>
+      </div> */}
       <table className={styles.table}>
         <thead>
           <tr>
