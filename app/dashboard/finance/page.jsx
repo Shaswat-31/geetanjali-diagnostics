@@ -46,7 +46,7 @@ const FinancePage = () => {
   }
   function getCostPerDoctor(patients) {
     return patients.reduce((acc, patient) => {
-      const doctor = patient.doctorReferred;
+      const doctor = patient.doctorReferred.toUpperCase();
       const cost = patient.costTotal;
       
       if (acc[doctor]) {
