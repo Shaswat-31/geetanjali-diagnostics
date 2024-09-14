@@ -167,8 +167,25 @@ const FinancePage = () => {
   </ul>
 </div>
 
+      <div className="shadow-lg rounded-lg p-6 mt-8" style={{ backgroundColor: "var(--bgSoft)" }}>
+        <h2 className="text-xl font-semibold mb-4" style={{ color: "var(--textSoft)" }}>Cost per Doctor Chart</h2>
+        <Bar data={chartData} />
+      </div>
+      <div className="shadow-lg rounded-lg p-6 mb-8" style={{ backgroundColor: "var(--bgSoft)" }}>
+  <h2 className="text-xl font-semibold mb-4" style={{ color: "var(--textSoft)" }}>Cost per Doctor</h2>
+  <ul className="space-y-2">
+    {Object.entries(doctorCosts).map(([doctor, totalCost]) => (
+      <li key={doctor} className="flex justify-between items-center p-4 rounded-md"
+          style={{ backgroundColor: "var(--bgSoft)", color: "var(--textSoft)" }}>
+        <span className="font-medium">{doctor}</span>
+        <span className="text-sm">₹{totalCost}</span>
+      </li>
+    ))}
+  </ul>
+</div>
 
-      <div className="shadow-lg rounded-lg p-6" style={{ backgroundColor: "var(--bgSoft)" }}>
+    
+<div className="shadow-lg rounded-lg p-6" style={{ backgroundColor: "var(--bgSoft)" }}>
         <h2 className="text-xl font-semibold mb-4" style={{ color: "var(--textSoft)" }}>Patient Financial Data</h2>
         <div className="overflow-x-auto">
           <table className="min-w-full" style={{ backgroundColor: "var(--bg)", color: "var(--text)" }}>
@@ -205,23 +222,6 @@ const FinancePage = () => {
           </table>
         </div>
       </div>
-
-      <div className="shadow-lg rounded-lg p-6 mt-8" style={{ backgroundColor: "var(--bgSoft)" }}>
-        <h2 className="text-xl font-semibold mb-4" style={{ color: "var(--textSoft)" }}>Cost per Doctor Chart</h2>
-        <Bar data={chartData} />
-      </div>
-      <div className="shadow-lg rounded-lg p-6 mb-8" style={{ backgroundColor: "var(--bgSoft)" }}>
-  <h2 className="text-xl font-semibold mb-4" style={{ color: "var(--textSoft)" }}>Cost per Doctor</h2>
-  <ul className="space-y-2">
-    {Object.entries(doctorCosts).map(([doctor, totalCost]) => (
-      <li key={doctor} className="flex justify-between items-center p-4 rounded-md"
-          style={{ backgroundColor: "var(--bgSoft)", color: "var(--textSoft)" }}>
-        <span className="font-medium">{doctor}</span>
-        <span className="text-sm">₹{totalCost}</span>
-      </li>
-    ))}
-  </ul>
-</div>
     </div>
     
   );
