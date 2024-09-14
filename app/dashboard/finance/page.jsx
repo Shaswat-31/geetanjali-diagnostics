@@ -44,21 +44,45 @@ const FinancePage = () => {
   
     return frequencyMap;
   }
-
+  function getCostPerDoctor(patients) {
+    return patients.reduce((acc, patient) => {
+      const doctor = patient.doctorReferred;
+      const cost = patient.costTotal;
+      
+      if (acc[doctor]) {
+        acc[doctor] += cost;
+      } else {
+        acc[doctor] = cost;
+      }
+      
+      return acc;
+    }, {});
+  }
+  const doctorCosts = getCostPerDoctor(patients);
   // Get test frequencies
   const testFrequencies = getTestFrequencies(testsNames);
+  // const chartData = {
+  //   labels: patients.map((patient) => patient.name),
+  //   datasets: [
+  //     {
+  //       label: "Cost",
+  //       data: patients.map((patient) => patient.costTotal),
+  //       backgroundColor: "rgba(75, 192, 192, 0.6)",
+  //     },
+  //     {
+  //       label: "Number of Tests",
+  //       data: testsData,
+  //       backgroundColor: "rgba(153, 102, 255, 0.6)",
+  //     },
+  //   ],
+  // };
   const chartData = {
-    labels: patients.map((patient) => patient.name),
+    labels: Object.keys(doctorCosts), // Doctor names
     datasets: [
       {
-        label: "Cost",
-        data: patients.map((patient) => patient.costTotal),
+        label: "Cost per Doctor",
+        data: Object.values(doctorCosts), // Total cost for each doctor
         backgroundColor: "rgba(75, 192, 192, 0.6)",
-      },
-      {
-        label: "Number of Tests",
-        data: testsData,
-        backgroundColor: "rgba(153, 102, 255, 0.6)",
       },
     ],
   };
@@ -97,6 +121,7 @@ const FinancePage = () => {
           {loading ? "Loading..." : "Fetch Data"}
         </button>
       </div>
+     
 
       <div className="shadow-lg rounded-lg p-6 mb-8" style={{ backgroundColor: "var(--bgSoft)" }}>
         <h2 className="text-xl font-semibold mb-4" style={{ color: "var(--textSoft)" }}>Summary</h2>
@@ -182,10 +207,23 @@ const FinancePage = () => {
       </div>
 
       <div className="shadow-lg rounded-lg p-6 mt-8" style={{ backgroundColor: "var(--bgSoft)" }}>
-        <h2 className="text-xl font-semibold mb-4" style={{ color: "var(--textSoft)" }}>Cost vs Tests Chart</h2>
+        <h2 className="text-xl font-semibold mb-4" style={{ color: "var(--textSoft)" }}>Cost per Doctor Chart</h2>
         <Bar data={chartData} />
       </div>
+      <div className="shadow-lg rounded-lg p-6 mb-8" style={{ backgroundColor: "var(--bgSoft)" }}>
+  <h2 className="text-xl font-semibold mb-4" style={{ color: "var(--textSoft)" }}>Cost per Doctor</h2>
+  <ul className="space-y-2">
+    {Object.entries(doctorCosts).map(([doctor, totalCost]) => (
+      <li key={doctor} className="flex justify-between items-center p-4 rounded-md"
+          style={{ backgroundColor: "var(--bgSoft)", color: "var(--textSoft)" }}>
+        <span className="font-medium">{doctor}</span>
+        <span className="text-sm">₹{totalCost}</span>
+      </li>
+    ))}
+  </ul>
+</div>
     </div>
+    
   );
 };
 

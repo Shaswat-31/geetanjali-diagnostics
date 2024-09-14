@@ -17,12 +17,13 @@ const Dashboard = async() => {
             <Card item={item} key={item.id} />
           ))}
         </div>
+        
+        <Transactions data={tests}/>
+        <Chart />
         {
           user.isAdmin &&
           <FinancePage/>
         }
-        <Transactions data={tests}/>
-        <Chart />
       </div>
     </div>
   );
