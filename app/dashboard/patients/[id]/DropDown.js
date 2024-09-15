@@ -1,10 +1,15 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Multiselect from "multiselect-react-dropdown";
 
-const DropDown = ({ options }) => {
+const DropDown = ({ options, List }) => {
   const [selectedTests, setSelectedTests] = useState([]);
+
+  // Update state when List prop changes
+  useEffect(() => {
+    setSelectedTests(List.map(test => ({ name: test, id: test })));
+  }, [List]);
 
   const handleSelect = (selectedList) => {
     setSelectedTests(selectedList);
@@ -14,10 +19,6 @@ const DropDown = ({ options }) => {
     setSelectedTests(selectedList);
   };
 
-  const handle=()=>{
-    console.log(selectedTests);
-    console.log(JSON.stringify(selectedTests.map((test) => test.name)))
-  }
   return (
     <>
       <Multiselect
