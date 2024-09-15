@@ -3,6 +3,7 @@
 import React, { useState } from "react";
 import { Bar } from "react-chartjs-2";
 import "chart.js/auto";
+import { Spinner } from "@chakra-ui/react";
 
 const FinancePage = () => {
   const [startDate, setStartDate] = useState("");
@@ -118,7 +119,7 @@ const FinancePage = () => {
           onClick={fetchData}
           className="bg-indigo-600 text-white px-6 py-2 rounded-lg mt-4 md:mt-0 md:ml-4 hover:bg-indigo-700 transition duration-300"
         >
-          {loading ? "Loading..." : "Fetch Data"}
+          {loading ? <Spinner/> : "Fetch Data"}
         </button>
       </div>
      

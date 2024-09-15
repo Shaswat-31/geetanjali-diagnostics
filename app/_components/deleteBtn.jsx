@@ -1,6 +1,6 @@
 "use client";
 
-import React from 'react';
+import React, { useState } from 'react';
 import styles from '@/app/ui/dashboard/patients/patients.module.css';
 import { deletePatient, deleteTest, deleteUser } from '../lib/actions';
 import {
@@ -11,26 +11,28 @@ import {
   AlertDialogHeader,
   AlertDialogContent,
   AlertDialogOverlay,
-  useDisclosure
+  useDisclosure,
+  Spinner
 } from '@chakra-ui/react';
 
 function DeleteBtn({ id, comp }) {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const cancelRef = React.useRef();
+  const [isLoading, setIsLoading] = useState(false); // Loading state
 
   const handleDelete = async (e) => {
     e.preventDefault();
+    setIsLoading(true); // Start loading spinner
     try {
-      if(comp==="Test")
-      await deleteTest(id);
-     // Call the delete function with the provided id
-     else if(comp==="Patient")
-      await deletePatient(id);
-    else
-    await deleteUser(id);
+      if (comp === "Test") await deleteTest(id);
+      else if (comp === "Patient") await deletePatient(id);
+      else await deleteUser(id);
+
       onClose(); // Close the dialog after deletion
     } catch (err) {
-      console.error('Failed to delete test:', err);
+      console.error(`Failed to delete ${comp}:`, err);
+    } finally {
+      setIsLoading(false); // Stop loading spinner
     }
   };
 
@@ -59,11 +61,16 @@ function DeleteBtn({ id, comp }) {
             </AlertDialogBody>
 
             <AlertDialogFooter>
-              <Button ref={cancelRef} onClick={onClose}>
+              <Button ref={cancelRef} onClick={onClose} disabled={isLoading}>
                 Cancel
               </Button>
-              <Button colorScheme='red' onClick={handleDelete} ml={3}>
-                Delete
+              <Button
+                colorScheme='red'
+                onClick={handleDelete}
+                isLoading={isLoading} // Button loading state
+                ml={3}
+              >
+               {isLoading ? <Spinner size="sm" /> : "Delete"}
               </Button>
             </AlertDialogFooter>
           </AlertDialogContent>

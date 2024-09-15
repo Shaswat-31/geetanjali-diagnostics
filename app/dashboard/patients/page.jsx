@@ -1,5 +1,5 @@
 import { deletePatient } from "@/app/lib/actions";
-import { fetchPatients, getPatientsByDate } from "@/app/lib/data";
+import { fetchPatients, fetchTests, getPatientsByDate } from "@/app/lib/data";
 import Pagination from "@/app/ui/dashboard/pagination/pagination";
 import Search from "@/app/ui/dashboard/search/search";
 import styles from "@/app/ui/dashboard/patients/patients.module.css";
@@ -10,12 +10,14 @@ import { getEndOfMonth, getStartOfMonth } from "@/app/lib/dateUtils";
 import DeleteBtn from "@/app/_components/deleteBtn";
 import dynamic from "next/dynamic";
 import { Button } from "@chakra-ui/react";
+import AddPatientModal from "@/app/ui/dashboard/transactions/transactions";
 
 // Dynamically import the ViewTestModal to enable client-side rendering
 const ViewTestModal = dynamic(() => import("@/app/_components/ViewTestModal"), { ssr: false });
 
 const PatientsPage = async ({ searchParams }) => {
   const { user } = await auth();
+  const {tests}=await fetchTests();
   const q = searchParams?.q || "";
   const page = searchParams?.page || 1;
   const { count, patients } = await fetchPatients(q, page);
@@ -46,11 +48,16 @@ const PatientsPage = async ({ searchParams }) => {
         <div className="flex flex-rows justify-between">
           <Search placeholder="Search for a patient..." />
           <div className="flex gap-2">
-            <Link href="/dashboard/patients/add">
+            {/* <Link href="/dashboard/patients/add">
               <button className={styles.addButton}>Add New</button>
-            </Link>
+            </Link> */}
+            <AddPatientModal data={tests}/>
             <a href={`/api/downloadPatients?startDate=${startDateParam}&endDate=${endDateParam}&q=${q}`} download>
-              <button className={styles.addButton}>Download Data</button>
+            <div
+        className="flex justify-center items-center cursor-pointer bg-blue-500 text-white p-4 rounded-lg shadow-lg hover:bg-blue-600 transition duration-300 ease-in-out"
+      >
+        <h1 className="text-xl font-semibold">Download</h1>
+      </div>
             </a>
           </div>
         </div>
@@ -86,19 +93,18 @@ const PatientsPage = async ({ searchParams }) => {
               <td>{patient.place}</td>
               <td>{patient.addedBy}</td>
               <td>
-                <div className={styles.buttons}>
-                  {(user.isAdmin || user.isManager) && (
-                    <>
-                      <Link href={`/dashboard/patients/${patient.id}`}>
-                        <button className={`${styles.button} ${styles.view}`}>
-                          View
-                        </button>
-                      </Link>
-                      <DeleteBtn id={patient.id} comp="Patient" />
-                    </>
-                  )}
-                  <ViewTestModal data={patient.tests} />
-                </div>
+              <div className="flex flex-col gap-1">
+  {(user.isAdmin || user.isManager) && (
+    <div className="flex justify-between items-center gap-1">
+      <Link href={`/dashboard/patients/${patient.id}`}>
+        <button className={`${styles.button} ${styles.view}`}>View</button>
+      </Link>
+      <DeleteBtn id={patient.id} comp="Patient" />
+    </div>
+  )}
+  <ViewTestModal data={patient.tests} />
+</div>
+
               </td>
             </tr>
           ))}
