@@ -32,6 +32,7 @@ const SinglePatientPage = async ({ params }) => {
           </select>
 
           <div>
+            <label>Tests</label>
             <DropDown options={tests} List={patientTests} />
           </div>
 

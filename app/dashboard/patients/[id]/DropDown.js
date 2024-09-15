@@ -28,7 +28,7 @@ const DropDown = ({ options, List }) => {
         onRemove={handleRemove}
         displayValue="name"
         showCheckbox={true}
-        placeholder="Select tests"
+        placeholder="Update tests"
         style={{
           multiselectContainer: {
             width: "100%",
