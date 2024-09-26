@@ -146,9 +146,6 @@ export const addPatient = async (formData) => {
     console.log(err);
     throw new Error("Failed to create patient!");
   }
-
-  revalidatePath("/dashboard/patients");
-  redirect("/dashboard/patients");
 };
 
 
